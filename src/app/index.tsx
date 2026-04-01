@@ -34,8 +34,8 @@ export default function HomeScreen() {
               />
             </ThemedView>
           )}
-          {data?.items.map((item) => (
-            <DataItem key={item.device} item={item} />
+          {data?.items.map((item, index) => (
+            <DataItem key={`${item.device}_${index}`} item={item} />
           ))}
           {data && (
             <HintRow
