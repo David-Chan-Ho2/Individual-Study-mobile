@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
 } from "react-native";
@@ -13,9 +14,17 @@ import { ThemedView } from "@/components/themed-view";
 import { WebBadge } from "@/components/web-badge";
 import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
 import { useLambdaData } from "@/hooks/use-lambda-data";
+import { useCallback, useState } from "react";
 
 export default function HomeScreen() {
+  const [refreshing, setRefreshing] = useState(false);
   const { data, loading, error, refetch } = useLambdaData();
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   return (
     <ThemedView style={styles.container}>
@@ -24,6 +33,9 @@ export default function HomeScreen() {
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {loading && <ActivityIndicator />}
           {error && (
